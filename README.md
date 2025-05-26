@@ -62,6 +62,18 @@ Executing a command from a custom configuration, with a different minecraft envi
 
 `cmdr --cfg /home/jdoe/servers.yaml --env minecraft --cmd "say hello"`
 
+A config file must match this structure, with each key being the environment's name. An example file is also provided in the repo.
+
+Example yaml file:
+```yaml
+default:
+    address: "192.168.10.1:25565"
+    password: "password"
+minecraft:
+    address: "example-rcon.com:448"
+    password: "admin"
+```
+
 
 ### Interactive mode
 
