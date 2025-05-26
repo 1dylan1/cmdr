@@ -32,17 +32,22 @@ cmdr --addr <server_ip:port> --pwd <rcon_password [OPTIONS]
 ### Flags 
 
 `--addr <server_address:port>` (required): The IP address and port of your RCON server (eg: 192.168.1.10:27015).
+
 `--pwd <password>` (required): Your rcon password for the server.
+
 `--cmd <command>` (optional): a single RCON command to execute on startup.
+
 `--it` (optional): enable interactive shell mode.
 
 
 ### Examples
 
 Executing a single command:
+
 `cmdr --addr 127.0.0.1:27015 --pwd your_rcon_password --cmd "status"`
 
 Entering interactive shell mode with a start command included:
+
 `cmdr --addr 127.0.0.1:27015 --pwd your_rcon_password --cmd "status" --it`
 
 ### Interactive mode
