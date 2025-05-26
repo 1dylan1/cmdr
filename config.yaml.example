@@ -1,0 +1,6 @@
+default:
+    address: "127.0.0.1:27015"
+    password: "password"
+local:
+    address: "192.168.10.1:25566"
+    password: "password"

@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"commander/rcon"
+	"commander/config"
 	"flag"
 	"fmt"
 	"os"
@@ -14,19 +15,38 @@ func main() {
 	serverAddr := flag.String("addr", "", "RCON server address/port (eg: 192.168.1.10:27015)")
 	password := flag.String("pwd", "", "RCON password")
 	command := flag.String("cmd", "", "RCON command to execute on program startup (eg: status)")
+	environment := flag.String("env", "", "Predefined environment from config file to use")
 	interactive := flag.Bool("it", false, "Enable interactive shell mode")
+	// configFile := flag.String("config", "", "Config file to use (defaults to your .config/cmdr/config file)")	
 	flag.Parse()
 
-	if *password == "" {
-		fmt.Printf("Error: RCON password cannot be empty: Use --pwd <password> | type %s --help for usage.\n", os.Args[0])
-		os.Exit(1)
-	}
-	if *serverAddr == "" {
-		fmt.Printf("Error: RCON address cannot be empty: Use --addr <server address> | type %s --help for usage\n", os.Args[0])
+	config, err := config.LoadConfig()
+	if err != nil {
+		fmt.Printf("Error getting config file: %v", err)
 		os.Exit(1)
 	}
 	
-	rconClient, err := rcon.NewRconClient(*serverAddr, *password)
+	var address string
+	var pwd string
+
+	if defaultServer, found := config.Servers["default"]; found {
+		address = defaultServer.Address
+		pwd = defaultServer.Password
+	}
+
+	if *environment != "" {
+		if server, found := config.Servers[*environment]; found {
+			address = server.Address
+			pwd = server.Password
+		}
+	}
+
+	if *password != "" && *serverAddr != "" {
+		address = *serverAddr
+		pwd = *password
+	}
+
+	rconClient, err := rcon.NewRconClient(address, pwd)
 	if err != nil {
 		fmt.Printf("error opening rcon connection: %v\n", err)
 		return
@@ -42,14 +62,14 @@ func main() {
 			if err != nil {
 				fmt.Printf("Error executing command '%s': %v\n", *command, err)
 			} else {
-				fmt.Println(output)
+				fmt.Print(output)
 			}
 		}
 
 		fmt.Println("Entering interactive RCON shell. Type 'exit' or 'quit' to leave.")
 		scanner := bufio.NewScanner(os.Stdin)
 		for {
-			fmt.Print("cmd> ")
+			fmt.Print("cmdr> ")
 			if !scanner.Scan() {
 				break
 			}

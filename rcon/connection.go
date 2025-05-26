@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 )
 
 type RconClient struct {
@@ -13,7 +14,7 @@ type RconClient struct {
 }
 
 func NewRconClient(address string, password string) (*RconClient, error) {
-	conn, err := net.Dial("tcp", address)
+	conn, err := net.DialTimeout("tcp", address, 20*time.Second)
 	if err != nil {
 		return nil, err
 	}
