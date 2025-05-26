@@ -25,7 +25,7 @@ Alternatively, you can build the file with `make build` and, run `./cmdr`.
 ### Basic Syntax
 
 ```bash
-cmdr --addr <server_ip:port> --pwd <rcon_password [OPTIONS]
+cmdr --addr <server_ip:port> --pwd <rcon_password> [OPTIONS]
 
 ```
 
