@@ -5,7 +5,7 @@ const (
 	SERVERDATA_RESPONSE_VALUE 	PacketType = 0 
 	SERVERDATA_AUTH_RESPONSE 	PacketType = 2
 	SERVERDATA_EXECCOMMAND 		PacketType = 2
-	SERVERDATA_AUTH 			PacketType = 3
+	SERVERDATA_AUTH			PacketType = 3
 )
 
 const (
