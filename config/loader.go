@@ -32,10 +32,14 @@ func getConfigPath() (string, error) {
 	return filepath.Join(configHome, label, configFileName), nil
 }
 
-func LoadConfig() (*Config, error) {
-	configFilePath, err := getConfigPath()
-	if err != nil {
-		return nil, fmt.Errorf("could not determine config file path: %v", err)
+func LoadConfig(configFileArg string) (*Config, error) {
+	configFilePath := configFileArg
+	if configFilePath == "" {
+		defaultConfigFilePath, err := getConfigPath()
+		if err != nil {
+			return nil, fmt.Errorf("could not determine config file path: %v", err)
+		}
+		configFilePath = defaultConfigFilePath
 	}
 	
 	fileContent, err := os.ReadFile(configFilePath)

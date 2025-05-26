@@ -25,19 +25,23 @@ Alternatively, you can build the file with `make build` and, run `./cmdr`.
 ### Basic Syntax
 
 ```bash
-cmdr --addr <server_ip:port> --pwd <rcon_password> [OPTIONS]
+cmdr [OPTIONS] [COMMANDS]
 
 ```
 
 ### Flags 
 
-`--addr <server_address:port>` (required): The IP address and port of your RCON server (eg: 192.168.1.10:27015).
+`--addr <server_address:port>` (optional): The IP address and port of your RCON server (eg: 192.168.1.10:27015) if not using the default.
 
-`--pwd <password>` (required): Your rcon password for the server.
+`--pwd <password>` (optional): Your rcon password for the server if not using the default.
 
 `--cmd <command>` (optional): a single RCON command to execute on startup.
 
 `--it` (optional): enable interactive shell mode.
+
+`--cfg` (optional): configuration file to use. Defaults to the one specified in the make install if not provided.
+
+`--env` (optional): which environment from configuration file to use, will use 'default' from the config file if not specified.
 
 
 ### Examples
@@ -49,6 +53,15 @@ Executing a single command:
 Entering interactive shell mode with a start command included:
 
 `cmdr --addr 127.0.0.1:27015 --pwd your_rcon_password --cmd "status" --it`
+
+Entering an interactive shell from the minecraft environment, specified in the default config:
+
+`cmdr --env minecraft -it`
+
+Executing a command from a custom configuration, with a different minecraft environment: 
+
+`cmdr --cfg /home/jdoe/servers.yaml --env minecraft --cmd "say hello"`
+
 
 ### Interactive mode
 

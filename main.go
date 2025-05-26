@@ -17,10 +17,10 @@ func main() {
 	command := flag.String("cmd", "", "RCON command to execute on program startup (eg: status)")
 	environment := flag.String("env", "", "Predefined environment from config file to use")
 	interactive := flag.Bool("it", false, "Enable interactive shell mode")
-	// configFile := flag.String("config", "", "Config file to use (defaults to your .config/cmdr/config file)")	
+	configFile := flag.String("cfg", "", "Config file to use (defaults to your .config/cmdr/config file)")
 	flag.Parse()
 
-	config, err := config.LoadConfig()
+	config, err := config.LoadConfig(*configFile)
 	if err != nil {
 		fmt.Printf("Error getting config file: %v", err)
 		os.Exit(1)
@@ -38,6 +38,9 @@ func main() {
 		if server, found := config.Servers[*environment]; found {
 			address = server.Address
 			pwd = server.Password
+		} else {
+			fmt.Printf("Environment '%s' not found in config file.\n", *environment)
+			os.Exit(1)
 		}
 	}
 
@@ -45,7 +48,8 @@ func main() {
 		address = *serverAddr
 		pwd = *password
 	}
-
+	
+	fmt.Printf("Attempting to connect to %s (%s)..\n", *environment, address)
 	rconClient, err := rcon.NewRconClient(address, pwd)
 	if err != nil {
 		fmt.Printf("error opening rcon connection: %v\n", err)
