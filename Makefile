@@ -26,7 +26,7 @@ install: build
 	@mkdir -p "$(USER_CONFIG_DIR)"
 	@if [ ! -f "$(USER_CONFIG_FILE)" ]; then \
 		install -m 0644 "$(SOURCE_DEFAULT_USER_CONFIG)" "$(USER_CONFIG_FILE)"; \
-		echo "Default user config created at: $(USER_CONFIG_FILE)."; \
+		echo "Default user config created at: $(USER_CONFIG_FILE). <-- Edit me!"; \
 	else \
 		echo "User config already exists at $(USER_CONFIG_FILE). Skipping"; \
 	fi
