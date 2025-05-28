@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"log"
 	"net"
 	"time"
 )
@@ -84,53 +83,45 @@ func (c *RconClient) ExecuteCommand(command string) (string, error) {
 
 func (c *RconClient) ReadPacket() (Packet, error) {
 	r := c.connection
-	var packet Packet
-	var empty Packet
-	var n int64
+	var incomingPacket Packet
+	var size int32 // size of the incoming packet, minus the header.
 
-	err := binary.Read(r, binary.LittleEndian, &packet.Size)
+	err := binary.Read(r, binary.LittleEndian, &incomingPacket.Size)
 	if err != nil {
-		log.Printf("Error inside packet size")
-		return packet, err
+		return incomingPacket, err
 	}
-	n += 4
-	if packet.Size < MinPacket {
-		return empty, fmt.Errorf("packet size too small")
-	}
-	n += 4
-	err = binary.Read(r, binary.LittleEndian, &packet.Id)
-	if err != nil {
-		log.Printf("Error inside packet id")
-		return empty, err
-	}
-	n += 4
-	err = binary.Read(r, binary.LittleEndian, &packet.Type)
-	if err != nil {
-		log.Printf("Error inside packet type")
-		return empty, err
-	}
-	n += 4	
-	packet.Body = make([]byte, packet.Size - PacketHeader)
 	
-	var i int64
-	for i < int64(packet.Size - PacketHeader) {
-		var m int
-		var err error
-
-		if m, err = r.Read(packet.Body[i:]); err != nil {
-			return empty, fmt.Errorf("read err: %w", err)
-		}
-
-		i += int64(m)
+	if incomingPacket.Size < 10 {
+		return incomingPacket, fmt.Errorf("packet size was below minimum (had: %d, needs at least 10)", &incomingPacket.Size)
 	}
-	n += 1
-
-	if !bytes.Equal(packet.Body[len(packet.Body) - int(PacketPadding):], []byte{0x00,0x00}) {
-		return empty, fmt.Errorf("invalid packet padding")
+	
+	err = binary.Read(r, binary.LittleEndian, &incomingPacket.Id)
+	if err != nil {
+		return incomingPacket, err
 	}
+	size += 4
 
-	packet.Body = packet.Body[0 : len(packet.Body) - int(PacketPadding)]
-	return packet, nil
+	err = binary.Read(r, binary.LittleEndian, &incomingPacket.Type) 
+	if err != nil {
+		return incomingPacket, err
+	}
+	size += 4
+
+	calculatedBodySize := incomingPacket.Size - size
+	fmt.Printf("size: %d | calc: %d\n", incomingPacket.Size, calculatedBodySize)
+	buffer := make([]byte, calculatedBodySize)
+	err = binary.Read(r, binary.LittleEndian, &buffer)
+	if err != nil {
+		return incomingPacket, err
+	}
+	incomingPacket.Body = buffer
+	size += calculatedBodySize
+
+	if incomingPacket.Size != size {
+		return incomingPacket, fmt.Errorf("calculated size from reading did not match packet size given: (had: %d, expected: %d)", size, incomingPacket.Size)
+	}
+	fmt.Println(incomingPacket)
+	return incomingPacket, nil
 }
 
 func (c *RconClient) ReadHeader() (Packet, error) {
