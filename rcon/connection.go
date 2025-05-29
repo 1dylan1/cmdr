@@ -108,7 +108,6 @@ func (c *RconClient) ReadPacket() (Packet, error) {
 	size += 4
 
 	calculatedBodySize := incomingPacket.Size - size
-	fmt.Printf("size: %d | calc: %d\n", incomingPacket.Size, calculatedBodySize)
 	buffer := make([]byte, calculatedBodySize)
 	err = binary.Read(r, binary.LittleEndian, &buffer)
 	if err != nil {
@@ -120,7 +119,7 @@ func (c *RconClient) ReadPacket() (Packet, error) {
 	if incomingPacket.Size != size {
 		return incomingPacket, fmt.Errorf("calculated size from reading did not match packet size given: (had: %d, expected: %d)", size, incomingPacket.Size)
 	}
-	fmt.Println(incomingPacket)
+
 	return incomingPacket, nil
 }
 
