@@ -5,7 +5,7 @@ INSTALL_DIR := /usr/local/bin
 
 USER_CONFIG_BASE_DIR := $(shell XDG_CONFIG_HOME=${HOME}/.config; echo "$$XDG_CONFIG_HOME")
 USER_CONFIG_DIR := $(USER_CONFIG_BASE_DIR)/$(BINARY_NAME)
-USER_CONFIG_FILE := $(USER_CONFIG_DIR)/config.yaml
+USER_CONFIG_FILE := /usr/share/cmdr/config.yaml
 
 SOURCE_DEFAULT_USER_CONFIG := config.yaml.example
 

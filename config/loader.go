@@ -17,20 +17,17 @@ type Server struct {
 }
 
 func getConfigPath() (string, error) {
-	const label = "cmdr"
-	const configFileName = "config.yaml"
+    const label = "cmdr"
+    const configFileName = "config.yaml"
 
-	configHome := os.Getenv("XDG_CONFIG_HOME")
-	if configHome == "" {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			return "", fmt.Errorf("could not get user home directory: %v", err)
-		}
-		configHome = filepath.Join(homeDir, ".config")
+    systemPath := filepath.Join("/usr/share", label, configFileName)
+    if _, err := os.Stat(systemPath); err != nil {
+        return "", fmt.Errorf("config file not found at %s", systemPath)
+    }
 
-	}
-	return filepath.Join(configHome, label, configFileName), nil
+    return systemPath, nil
 }
+
 
 func LoadConfig(configFileArg string) (*Config, error) {
 	configFilePath := configFileArg

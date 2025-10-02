@@ -17,12 +17,12 @@ func main() {
 	command := flag.String("cmd", "", "RCON command to execute on program startup (eg: status)")
 	environment := flag.String("env", "", "Predefined environment from config file to use")
 	interactive := flag.Bool("it", false, "Enable interactive shell mode")
-	configFile := flag.String("cfg", "", "Config file to use (defaults to your .config/cmdr/config file)")
+	configFile := flag.String("cfg", "", "Config file to use (defaults to your /usr/share/cmdr/config.yaml file)")
 	flag.Parse()
 
 	config, err := config.LoadConfig(*configFile)
 	if err != nil {
-		fmt.Printf("Error getting config file: %v", err)
+		fmt.Printf("Error getting config file: %v\n", err)
 		os.Exit(1)
 	}
 	
