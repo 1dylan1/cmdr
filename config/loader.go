@@ -12,22 +12,21 @@ type Config struct {
 }
 
 type Server struct {
-	Address string `yaml:"address"`
+	Address  string `yaml:"address"`
 	Password string `yaml:"password"`
 }
 
 func getConfigPath() (string, error) {
-    const label = "cmdr"
-    const configFileName = "config.yaml"
+	const label = "cmdr"
+	const configFileName = "config.yaml"
 
-    systemPath := filepath.Join("/usr/share", label, configFileName)
-    if _, err := os.Stat(systemPath); err != nil {
-        return "", fmt.Errorf("config file not found at %s", systemPath)
-    }
+	systemPath := filepath.Join("/usr/share", label, configFileName)
+	if _, err := os.Stat(systemPath); err != nil {
+		return "", fmt.Errorf("config file not found at %s", systemPath)
+	}
 
-    return systemPath, nil
+	return systemPath, nil
 }
-
 
 func LoadConfig(configFileArg string) (*Config, error) {
 	configFilePath := configFileArg
@@ -38,7 +37,7 @@ func LoadConfig(configFileArg string) (*Config, error) {
 		}
 		configFilePath = defaultConfigFilePath
 	}
-	
+
 	fileContent, err := os.ReadFile(configFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("error reading config file from '%s': %v", configFilePath, err)
@@ -48,6 +47,6 @@ func LoadConfig(configFileArg string) (*Config, error) {
 	if err := yaml.Unmarshal(fileContent, &cfg); err != nil {
 		return nil, fmt.Errorf("error unmarshaling config file '%s': %v", configFilePath, err)
 	}
-	
+
 	return &cfg, nil
 }

@@ -2,8 +2,8 @@ package main
 
 import (
 	"bufio"
-	"commander/rcon"
 	"commander/config"
+	"commander/rcon"
 	"flag"
 	"fmt"
 	"os"
@@ -25,7 +25,7 @@ func main() {
 		fmt.Printf("Error getting config file: %v\n", err)
 		os.Exit(1)
 	}
-	
+
 	var address string
 	var pwd string
 
@@ -48,7 +48,7 @@ func main() {
 		address = *serverAddr
 		pwd = *password
 	}
-	
+
 	fmt.Printf("Attempting to connect to %s (%s)..\n", *environment, address)
 	rconClient, err := rcon.NewRconClient(address, pwd)
 	if err != nil {
@@ -58,7 +58,7 @@ func main() {
 	defer rconClient.Close()
 
 	var output string
-	
+
 	if *interactive {
 		if *command != "" {
 			fmt.Printf("Executing command: %s\n", *command)

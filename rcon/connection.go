@@ -18,7 +18,7 @@ func NewRconClient(address string, password string) (*RconClient, error) {
 		return nil, err
 	}
 
-	client := &RconClient{connection: conn} 
+	client := &RconClient{connection: conn}
 
 	err = client.AuthenticateToRcon(CUSTOM_ID, SERVERDATA_AUTH, password)
 	if err != nil {
@@ -42,7 +42,7 @@ func (c *RconClient) AuthenticateToRcon(packetId int32, packetType PacketType, b
 	if err != nil {
 		return fmt.Errorf("error authenticating: %v", err)
 	}
-	
+
 	responseHeader, err := c.ReadHeader()
 	if err != nil {
 		return fmt.Errorf("error reading response header: %v", err)
@@ -68,7 +68,7 @@ func (c *RconClient) ExecuteCommand(command string) (string, error) {
 	c.WritePacket(CUSTOM_ID, SERVERDATA_EXECCOMMAND, command)
 	responsePacket, err := c.ReadPacket()
 	if err != nil {
-		return "" , fmt.Errorf("error reading packet(1): %w", err)
+		return "", fmt.Errorf("error reading packet(1): %w", err)
 	}
 
 	if responsePacket.Id != CUSTOM_ID {
@@ -77,7 +77,7 @@ func (c *RconClient) ExecuteCommand(command string) (string, error) {
 
 	if responsePacket.Type != SERVERDATA_RESPONSE_VALUE {
 		return "", fmt.Errorf("error executing command - response header was not expected success code: expected %d -> got %d", SERVERDATA_RESPONSE_VALUE, responsePacket.Type)
-	}	
+	}
 	return responsePacket.GetBody(), nil
 }
 
@@ -90,18 +90,18 @@ func (c *RconClient) ReadPacket() (Packet, error) {
 	if err != nil {
 		return incomingPacket, err
 	}
-	
+
 	if incomingPacket.Size < 10 {
 		return incomingPacket, fmt.Errorf("packet size was below minimum (had: %d, needs at least 10)", &incomingPacket.Size)
 	}
-	
+
 	err = binary.Read(r, binary.LittleEndian, &incomingPacket.Id)
 	if err != nil {
 		return incomingPacket, err
 	}
 	size += 4
 
-	err = binary.Read(r, binary.LittleEndian, &incomingPacket.Type) 
+	err = binary.Read(r, binary.LittleEndian, &incomingPacket.Type)
 	if err != nil {
 		return incomingPacket, err
 	}
@@ -149,9 +149,8 @@ func (c *RconClient) WritePacket(packetId int32, packetType PacketType, body str
 	_ = binary.Write(buffer, binary.LittleEndian, packet.Size)
 	_ = binary.Write(buffer, binary.LittleEndian, packet.Id)
 	_ = binary.Write(buffer, binary.LittleEndian, packet.Type)
-	
+
 	buffer.Write(append(packet.Body, 0x00, 0x00))
 
 	return buffer.WriteTo(w)
 }
-
