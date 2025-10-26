@@ -4,6 +4,7 @@
 
 ---
 
+Now available on the AUR: `yay install cmdr` (https://aur.archlinux.org/packages/cmdr)
 ## Features
 
 **Single command execution** - run a specific RCON command directory from the terminal and get the output
